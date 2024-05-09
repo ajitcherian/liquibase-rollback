@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd
+              http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet id="InsertDocument_muyollection_2" author="ajit">
+    <ext:insertOne collectionName="myCollection_2">
+        <ext:document>
+            {
+                  name: "New York",
+                  population: 222000000,
+                  lastCensus: ISODate("2016-07-01"),
+                  famousFor: [ "the MOMA", "food", "Derek Jeter" ],
+                  mayor: {
+                    name: "Bill de Blasio",
+                    party: "D"
+                  }
+                }
+			</ext:document>
+    </ext:insertOne>
+    <rollback>
+        <ext:runCommand>
+            <ext:command>
+                {
+                    delete: "myCollection_2",
+                    deletes: [{ q: { name: "New York" }, limit: 1 }]
+                }
+            </ext:command>
+        </ext:runCommand>
+    </rollback>
+    </changeSet>
+</databaseChangeLog>

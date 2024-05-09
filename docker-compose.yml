@@ -1,0 +1,117 @@
+version: '3.1'
+ 
+services:
+ 
+  mongo:
+    image: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    ports:
+      - 27017:27017
+
+ 
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+      ME_CONFIG_BASICAUTH: false
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  # liquibase-mongo:
+  #   image: liquibasea-app:v1
+  #   command: > 
+  #     sh -c "liquibase --url=mongodb://root:example@192.168.1.88:27017/liquibase_test?authSource=admin --logLevel=info --changeLogFile=changelog/changelog.xml update; liquibase --url=mongodb://root:example@192.168.1.88:27017/liquibase_test?authSource=admin --logLevel=info --changeLogFile=changelog/changelog.xml tag v1"
+  #   volumes:
+  #     - "./db/changelog:/liquibase/changelog"
+  #   depends_on: 
+  #     - mongo
+
+  # liquibase-mongo:
+  #   image: liquibasea-app:v2
+  #   command: > 
+  #     sh -c "liquibase --url=mongodb://root:example@192.168.1.88:27017/liquibase_test?authSource=admin --logLevel=info --changeLogFile=changelog/changelog.xml update; liquibase --url=mongodb://root:example@192.168.1.88:27017/liquibase_test?authSource=admin --logLevel=info --changeLogFile=changelog/changelog.xml tag v2"
+  #   volumes:
+  #     - "./db/changelog:/liquibase/changelog"
+  #   depends_on: 
+  #     - mongo
+
+
+  # liquibase-mongo:
+  #   image: liquibasea-app:v2
+  #   command: > 
+  #     sh -c "liquibase --url=mongodb://root:example@192.168.1.88:27017/liquibase_test?authSource=admin --logLevel=info --changeLogFile=changelog/changelog.xml rollback --tag=v1"
+  #   volumes:
+  #     - "./db/changelog:/liquibase/changelog"
+  #   depends_on: 
+  #     - mongo
+ 
+  # liquibase-mongo:
+  #   image: liquibase-mongo:4.18.0-v1
+  #   command: > 
+  #     sh -c "/liquibase/liquibase --url=mongodb://root:example@mongo:27017/liquibase_test?authSource=admin --logLevel=info --changeLogFile=changelog/changelog.xml update"
+  #   volumes:
+  #     - "./example/changelog:/liquibase/changelog"
+  #   depends_on: 
+  #     - mongo
+
+  # liquibase-mongo:
+  #   image: liquibase-mongo:4.18.0-v2
+  #   command: > 
+  #     sh -c "/liquibase/liquibase --url=mongodb://root:example@mongo:27017/liquibase_test?authSource=admin --logLevel=info --changeLogFile=changelog/changelog.xml update"
+  #   volumes:
+  #     - "./example/changelog:/liquibase/changelog"
+  #   depends_on: 
+  #     - mongo
+
+  # liquibase-mongo:
+  #   image: liquibase-mongo:4.18.0-v2
+  #   command: > 
+  #     sh -c "/liquibase/liquibase --url=mongodb://root:example@mongo:27017/liquibase_test?authSource=admin --changeLogFile=changelog/changelog.xml --logLevel=info rollback-count 2"
+  #   volumes:
+  #     - "./example/changelog:/liquibase/changelog"
+  #   depends_on: 
+  #     - mongo
+
+  # liquibase-mongo:
+  #   image: liquibase-mongo:4.18.0-v2
+  #   command: > 
+  #     sh -c "/liquibase/liquibase --url=mongodb://root:example@mongo:27017/liquibase_test?authSource=admin --changeLogFile=changelog/changelog.xml --logLevel=info rollback --tag=v1"
+  #   volumes:
+  #     - "./example/changelog:/liquibase/changelog"
+  #   depends_on: 
+  #     - mongo
+ 
+networks:
+  node-network:
+    driver: bridge

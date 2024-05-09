@@ -1,0 +1,40 @@
+name: Rollback
+on:
+  workflow_dispatch:
+    inputs:
+      rollback-version:
+        description: 'Docker tag or Get Release version from Github release'
+        required: true
+        default: v1 
+      current-version:
+        description: 'Docker tag or Get Release version from Github release'
+        required: true
+        default: v2
+      db-rollback:
+        description: 'Change to be applied using kustomize'
+        type: boolean
+        required: true
+        default: false
+
+jobs:
+  rollback:
+    name: "Rollback"
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+    - uses: actions/checkout@v3
+      #checkout to tag of latest version
+    - uses: addnab/docker-run-action@v3
+      with:
+        # username: ${{ secrets.DOCKER_USERNAME }}
+        # password: ${{ secrets.DOCKER_PASSWORD }}
+        # registry: gcr.io
+        image: liquibasea-app:v2 #LIQUIBASE_IMAGE:LATEST_RELEASE_VERSION_TAG
+        options: -v ${{ github.workspace }}/db/changelog/:/liquibase/changelog/
+        run: |
+          liquibase --url=mongodb://root:example@192.168.1.88:27017/liquibase_test?authSource=admin --logLevel=info --changeLogFile=changelog/db.changelog_root.xml rollback --tag=v1
+
+    - name: kubectl rollback
+      run: echo "run kubectl rollout undo deployment/nginx-test"

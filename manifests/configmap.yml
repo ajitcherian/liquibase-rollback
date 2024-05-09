@@ -1,0 +1,11 @@
+apiVersion: v1
+data:
+  db.changelog_root.xml: "<?xml version=\"1.1\" encoding=\"UTF-8\" standalone=\"no\"?>\n<databaseChangeLog\n
+    \       xmlns=\"http://www.liquibase.org/xml/ns/dbchangelog\"\n        xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n
+    \       xmlns:ext=\"http://www.liquibase.org/xml/ns/dbchangelog-ext\"\n        xsi:schemaLocation=\"http://www.liquibase.org/xml/ns/dbchangelog
+    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd\n        http://www.liquibase.org/xml/ns/dbchangelog-ext
+    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd\">\n   \n\t<includeAll
+    path=\"/migration/\"/>\n\t\n</databaseChangeLog>\n"
+kind: ConfigMap
+metadata:
+  name: liquiibase-service-volume

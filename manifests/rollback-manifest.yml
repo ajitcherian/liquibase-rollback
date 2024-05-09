@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: liquibase-mongo-rollback-job
+spec:
+  ttlSecondsAfterFinished: 20
+  template:
+    spec:
+      containers:
+      - name: liquibase-rollback
+        image: "liquibasea-app:v2"
+        command: ["/bin/sh", "-c"]
+        args:
+          - "liquibase --url=mongodb://root:example@192.168.1.88:27017/liquibase_test?authSource=admin --logLevel=info --changeLogFile=changelog/db.changelog_root.xml rollback --tag=v1"
+        volumeMounts:
+        - name: liquibase-changelog-volume
+          mountPath: /liquibase/changelog
+      volumes:
+      - name: liquibase-changelog-volume
+        configMap:
+          name: liquiibase-service-volume
+      restartPolicy: Never
+  backoffLimit: 4

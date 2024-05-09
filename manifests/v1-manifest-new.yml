@@ -1,0 +1,78 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-test
+  labels:
+    backstage.io/kubernetes-id: nginx-test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-test
+  template:
+    metadata:
+      labels:
+        app: nginx-test
+        backstage.io/kubernetes-id: nginx-test
+    spec:
+      containers:
+        - name: nginx-test
+          image: "nginx:latest"
+          livenessProbe:
+            failureThreshold: 6
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            successThreshold: 1
+            timeoutSeconds: 10
+          readinessProbe:
+            failureThreshold: 6
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            successThreshold: 1
+            timeoutSeconds: 10
+          env:
+            - name: APP
+              value: "1"
+          ports:
+            - containerPort: 80
+          imagePullPolicy: Never
+      initContainers:
+        - name: liquibase
+          image: "liquibasea-app:v1"
+          command: ["/bin/sh", "-c"]
+          args:
+            - "liquibase --url=mongodb://root:example@192.168.1.88:27017/liquibase_test?authSource=admin --logLevel=info --changeLogFile=changelog/db.changelog_root.xml update ; liquibase --url=mongodb://root:example@192.168.1.88:27017/liquibase_test?authSource=admin --logLevel=info --changeLogFile=changelog/db.changelog_root.xml tag v1"
+          volumeMounts:
+          - name: liquibase-changelog-volume
+            mountPath: /liquibase/changelog
+      volumes:
+      - name: liquibase-changelog-volume
+        configMap:
+          name: liquiibase-service-volume
+      restartPolicy: Always
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-test
+  labels:
+    app: nginx-test
+    backstage.io/kubernetes-id: nginx-test
+spec:
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 80
+  selector:
+    app: nginx-test
+  type: ClusterIP
